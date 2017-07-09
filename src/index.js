@@ -48,6 +48,8 @@ function spawnDispatcher (file, args, options) {
   const command = file + ' ' + args.join(' ')
   const mock = commands[command]
   if (mock) {
+    debug('removing old mock')
+    delete commands[command]
     return spawnStub(file, args, options)
   } else {
     return oldSpawn(file, args, options)
