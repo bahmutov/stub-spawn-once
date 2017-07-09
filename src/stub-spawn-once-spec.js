@@ -1,11 +1,13 @@
 'use strict'
 
+const execa = require('execa')
+const snapshot = require('snap-shot')
 
 /* global describe, it */
-const stubSpawnOnce = require('.')
+// const stubSpawnOnce = require('.')
 
 describe('stub-spawn-once', () => {
-  it('write this test', () => {
-    console.assert(stubSpawnOnce, 'should export something')
+  it('plain execa.shell', () => {
+    return snapshot(execa.shell('echo "hello"'))
   })
 })

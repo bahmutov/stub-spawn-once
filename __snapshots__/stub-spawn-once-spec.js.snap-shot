@@ -1,0 +1,11 @@
+exports['plain execa.shell 1'] = {
+  "stdout": "hello",
+  "stderr": "",
+  "code": 0,
+  "failed": false,
+  "killed": false,
+  "signal": null,
+  "cmd": "/bin/sh -c echo \"hello\"",
+  "timedOut": false
+}
+
