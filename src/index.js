@@ -96,4 +96,4 @@ function stubSpawnOnce (command, exitCode, stdout, stderr) {
   }
 }
 
-module.exports = stubSpawnOnce
+module.exports = { stubSpawnOnce }

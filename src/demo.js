@@ -1,7 +1,13 @@
 const execa = require('execa')
-const stub = require('.')
+const { stubSpawnOnce } = require('.')
 
-stub('/bin/sh -c echo "hello"', 0, 'hi from stub!', 'and some error output')
+stubSpawnOnce(
+  '/bin/sh -c echo "hello"',
+  0, // exit code
+  'hi from stub!', // stdout
+  'and some error output' // stderr
+)
+
 execa
   .shell('echo "hello"')
   .then(console.log)
