@@ -7,6 +7,9 @@ stubSpawnOnce(
   'hi from stub!', // stdout
   'and some error output' // stderr
 )
+// alternative:
+// const { stubSpawnShellOnce } = require('.')
+// stubSpawnShellOnce('echo "hello"', 0, '...', '...')
 
 execa
   .shell('echo "hello"')
