@@ -4,9 +4,25 @@ const cp = require('child_process')
 const debug = require('debug')('stub-spawn-once')
 const la = require('lazy-ass')
 const is = require('check-more-types')
+const { Readable } = require('stream')
 
 // save original spawn right away
 const oldSpawn = cp.spawn
+
+const noop = () => {}
+
+function readableString (text) {
+  const s = new Readable()
+  s._read = noop
+  s.destroy = noop
+
+  if (text !== undefined) {
+    s.push(text)
+    s.push(null)
+  }
+
+  return s
+}
 
 function spawnStub (command, exitCode, stdout, stderr) {
   debug('in spawn stub for command', command)
@@ -19,10 +35,15 @@ function spawnStub (command, exitCode, stdout, stderr) {
     listeners[name].push(cb)
   }
 
+  const stdoutStream = readableString(stdout)
+  const stderrStream = readableString(stderr)
+
   const kill = () => {}
   const child = {
     on,
-    kill
+    kill,
+    stdout: stdoutStream,
+    stderr: stderrStream
   }
 
   const exitSignal = null
@@ -48,7 +69,7 @@ function spawnDispatcher (file, args, options) {
   const mock = commands[command]
   if (mock) {
     debug('removing old mock')
-    const {exitCode, stdout, stderr} = mock
+    const { exitCode, stdout, stderr } = mock
     delete commands[command]
     return spawnStub(command, exitCode, stdout, stderr)
   } else {
