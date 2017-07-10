@@ -14,14 +14,30 @@ describe('stub-spawn-once', () => {
     return snapshot(execa.shell('echo "hello"'))
   })
 
-  it('is a function', () => {
-    la(is.fn(stubSpawnOnce))
+  describe('stubSpawnOnce', () => {
+    it('is a function', () => {
+      la(is.fn(stubSpawnOnce))
+    })
+
+    it('mocks command with exit code, stdout and stderr', () => {
+      const cmd = 'echo "hello"'
+      // this is command for execa.shell
+      stubSpawnOnce(`/bin/sh -c ${cmd}`, 0, 'foo', 'bar')
+      return snapshot(execa.shell(cmd))
+    })
   })
 
-  it('mocks command with exit code, stdout and stderr', () => {
-    const cmd = 'echo "hello"'
-    // this is command for execa.shell
-    stubSpawnOnce(`/bin/sh -c ${cmd}`, 0, 'foo', 'bar')
-    return snapshot(execa.shell(cmd))
+  describe('stubSpawnShellOnce', () => {
+    const { stubSpawnShellOnce } = require('.')
+
+    it('is a function', () => {
+      la(is.fn(stubSpawnShellOnce))
+    })
+
+    it('mocks echo hello', () => {
+      const cmd = 'echo "hello"'
+      stubSpawnShellOnce(cmd, 0, 'foo', 'bar')
+      return snapshot(execa.shell(cmd))
+    })
   })
 })

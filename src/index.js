@@ -96,4 +96,15 @@ function stubSpawnOnce (command, exitCode, stdout, stderr) {
   }
 }
 
-module.exports = { stubSpawnOnce }
+// only provide the shell command like 'echo "hello"'
+function stubSpawnShellOnce (command, exitCode, stdout, stderr) {
+  la(is.unemptyString(command), 'missing shell command to stub', command)
+  const fullCommand = `/bin/sh -c ${command}`
+  commands[fullCommand] = {
+    exitCode,
+    stdout,
+    stderr
+  }
+}
+
+module.exports = { stubSpawnOnce, stubSpawnShellOnce }
