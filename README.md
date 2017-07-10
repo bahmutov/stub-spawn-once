@@ -8,15 +8,112 @@
 [![semantic-release][semantic-image] ][semantic-url]
 [![js-standard-style][standard-image]][standard-url]
 
+## Why
+
+Mocking [child_process.spawn][spawn] is hard. See for yourself - the stubbing
+api for your tests is hard in [mock-spawn](https://github.com/gotwarlost/mock-spawn#common-cases)
+or [spawn-mock](https://github.com/TylorS/spawn-mock#api). I wanted something
+much simpler: just specify exit code and `stdout` and `stderr` for a single
+execution. This module does this
+
+```js
+const execa = require('execa') // or any module
+const { stubSpawnOnce } = require('.')
+stubSpawnOnce(
+  '/bin/sh -c echo "hello"',
+  0, // exit code
+  'hi from stub!', // stdout
+  'and some error output' // stderr
+)
+execa
+  .shell('echo "hello"')
+  .then(console.log)
+  /*
+    output:
+    {
+      stdout: 'hi from stub!',
+      stderr: 'and some error output',
+      code: 0,
+      failed: false,
+      killed: false,
+      signal: null,
+      cmd: '/bin/sh -c echo "hello"',
+      timedOut: false
+    }
+  */
+  .then(() => {
+    // call command again - the stub is gone
+    return execa.shell('echo "hello"')
+  })
+  .then(console.log)
+  /*
+    output:
+    {
+      stdout: 'hello',
+      stderr: '',
+      code: 0,
+      failed: false,
+      killed: false,
+      signal: null,
+      cmd: '/bin/sh -c echo "hello"',
+      timedOut: false
+    }
+  */
+```
+
+[spawn]: http://devdocs.io/node/child_process#child_process_child_process_spawn_command_args_options
+
 ## Install
 
 Requires [Node](https://nodejs.org/en/) version 6 or above.
 
 ```sh
-npm install --save stub-spawn-once
+npm install --save-dev stub-spawn-once
 ```
 
 ## Use
+
+Examples from Mocha unit tests. Common information
+
+* only the given command is stubbed,
+  other spawn commands are *unaffected* by the stub.
+* a stub will be removed after it runs once.
+
+### stubSpawnOnce
+
+```js
+const { stubSpawnOnce } = require('stub-spawn-once')
+const execa = require('execa')
+it('prints mock output', () => {
+  const cmd = 'echo "hello"'
+  // output "foo" instead of "hello"
+  stubSpawnOnce(`/bin/sh -c ${cmd}`, 0, 'foo', 'bar')
+  return execa.shell(cmd)
+    .then(result => {
+      // result.code = 0
+      // result.stdout = "foo"
+      // result.stderr = "bar"
+    })
+})
+```
+
+### stubSpawnShellOnce
+
+```js
+const { stubSpawnShellOnce } = require('stub-spawn-once')
+const execa = require('execa')
+it('prints mock output', () => {
+  const cmd = 'echo "hello"'
+  // output "foo" instead of "hello"
+  stubSpawnShellOnce(cmd, 0, 'foo', 'bar')
+  return execa.shell(cmd)
+    .then(result => {
+      // result.code = 0
+      // result.stdout = "foo"
+      // result.stderr = "bar"
+    })
+})
+```
 
 ### Small print
 
