@@ -9,3 +9,14 @@ exports['plain execa.shell 1'] = {
   "timedOut": false
 }
 
+exports['mocks command with exit code, stdout and stderr 1'] = {
+  "stdout": "foo",
+  "stderr": "bar",
+  "code": 0,
+  "failed": false,
+  "killed": false,
+  "signal": null,
+  "cmd": "/bin/sh -c echo \"hello\"",
+  "timedOut": false
+}
+

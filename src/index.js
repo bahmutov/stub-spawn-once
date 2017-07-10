@@ -51,7 +51,7 @@ function spawnStub (command, exitCode, stdout, stderr) {
   setTimeout(() => {
     if (listeners.exit) {
       listeners.exit.forEach(cb => {
-        console.log('calling exit code %d and signal %s', exitCode, exitSignal)
+        debug('calling exit code %d and signal %s', exitCode, exitSignal)
         cb(exitCode, exitSignal)
       })
     }
