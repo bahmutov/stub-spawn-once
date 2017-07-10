@@ -4,6 +4,7 @@ const execa = require('execa')
 const snapshot = require('snap-shot')
 const la = require('lazy-ass')
 const is = require('check-more-types')
+const cp = require('child_process')
 
 /* global describe, it */
 
@@ -12,6 +13,22 @@ describe('stub-spawn-once', () => {
 
   it('plain execa.shell', () => {
     return snapshot(execa.shell('echo "hello"'))
+  })
+
+  it('plain child_process.exec', done => {
+    cp.exec('echo "hello"', (code, stdout, stderr) => {
+      console.log('echo stdout', stdout.trim())
+      done()
+    })
+  })
+
+  it.skip('supports child_process.exec', done => {
+    const cmd = '/bin/sh -c echo "hello"'
+    stubSpawnOnce(cmd, 0, 'foo', 'bar')
+    cp.exec('echo "hello"', (code, stdout, stderr) => {
+      console.log('echo stdout', stdout.trim())
+      done()
+    })
   })
 
   describe('stubSpawnOnce', () => {
