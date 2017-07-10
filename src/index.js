@@ -8,8 +8,8 @@ const is = require('check-more-types')
 // save original spawn right away
 const oldSpawn = cp.spawn
 
-function spawnStub (file, args, options) {
-  debug('in spawn stub', file, args)
+function spawnStub (command, exitCode, stdout, stderr) {
+  debug('in spawn stub for command', command)
 
   const listeners = {}
   const on = (name, cb) => {
@@ -25,7 +25,6 @@ function spawnStub (file, args, options) {
     kill
   }
 
-  const exitCode = 0
   const exitSignal = null
 
   setTimeout(() => {
@@ -49,8 +48,9 @@ function spawnDispatcher (file, args, options) {
   const mock = commands[command]
   if (mock) {
     debug('removing old mock')
+    const {exitCode, stdout, stderr} = mock
     delete commands[command]
-    return spawnStub(file, args, options)
+    return spawnStub(command, exitCode, stdout, stderr)
   } else {
     return oldSpawn(file, args, options)
   }
