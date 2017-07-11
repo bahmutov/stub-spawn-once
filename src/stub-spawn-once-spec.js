@@ -22,11 +22,28 @@ describe('stub-spawn-once', () => {
     })
   })
 
-  it.skip('supports child_process.exec', done => {
-    const cmd = '/bin/sh -c echo "hello"'
-    stubSpawnOnce(cmd, 0, 'foo', 'bar')
+  it('supports child_process.exec', done => {
+    const cmd = 'echo "exec test"'
+    const mockStdout = 'exec says foo'
+    stubSpawnOnce(cmd, 0, mockStdout, 'bar')
+    cp.exec(cmd, (code, stdout, stderr) => {
+      la(stdout === mockStdout, 'different stdout:', stdout)
+      done()
+    })
+  })
+
+  it.skip('example spying on child_process.execFile', done => {
+    const execFile = cp.execFile
+    cp.execFile = function (file, options, callback) {
+      console.log('execFile')
+      console.log(file)
+      console.log('options', options)
+      return execFile(file, options, callback)
+    }
+    // cp.exec delegates to cp.execFile
     cp.exec('echo "hello"', (code, stdout, stderr) => {
-      console.log('echo stdout', stdout.trim())
+      console.log('echo stdout:', stdout.trim())
+      cp.execFile = execFile
       done()
     })
   })

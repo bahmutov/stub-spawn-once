@@ -6,8 +6,9 @@ const la = require('lazy-ass')
 const is = require('check-more-types')
 const { Readable } = require('stream')
 
-// save original spawn right away
+// save original methods right away
 const oldSpawn = cp.spawn
+const oldExecFile = cp.execFile
 
 const noop = () => {}
 
@@ -60,6 +61,12 @@ function spawnStub (command, exitCode, stdout, stderr) {
   return child
 }
 
+function execFileStub (file, opts, callback, exitCode, stdout, stderr) {
+  setTimeout(function () {
+    callback(exitCode, stdout, stderr)
+  }, 0)
+}
+
 // list of stubbed commands
 const commands = {}
 
@@ -77,14 +84,29 @@ function spawnDispatcher (file, args, options) {
   }
 }
 
+function execFileDispatcher (file, options, callback) {
+  debug('execFileDispatcher', file, options)
+  const command = file
+  const mock = commands[command]
+  if (mock) {
+    debug('removing old exec file mock')
+    const { exitCode, stdout, stderr } = mock
+    delete commands[command]
+    return execFileStub(file, options, callback, exitCode, stdout, stderr)
+  } else {
+    return oldExecFile(file, options, callback)
+  }
+}
+
 function stubbed () {
   return cp.spawn === spawnDispatcher
 }
 
 if (!stubbed()) {
   cp.spawn = spawnDispatcher
+  cp.execFile = execFileDispatcher
 } else {
-  debug('child_process.spawn was already stubbed')
+  debug('child_process.spawn/execFile was already stubbed')
 }
 
 function stubSpawnOnce (command, exitCode, stdout, stderr) {

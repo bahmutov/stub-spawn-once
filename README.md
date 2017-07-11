@@ -115,6 +115,24 @@ it('prints mock output', () => {
 })
 ```
 
+## Bonus
+
+As a bonus, this module also mocks [child_process.execFile][execFile] allowing
+you easy testing.
+
+```js
+const {stubSpawnOnce} = require('stub-spawn-once')
+stubSpawnOnce('echo "hello"', 0, 'foo', 'bar')
+const cp = require('child_process')
+cp.exec('echo "hello"', (code, out, errors) => {
+  // code is 0
+  // out is "foo"
+  // errors is "bar"
+})
+```
+
+[execFile]: https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback
+
 ### Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2017
