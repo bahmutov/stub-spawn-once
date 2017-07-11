@@ -131,6 +131,13 @@ cp.exec('echo "hello"', (code, out, errors) => {
 })
 ```
 
+You can use alias `stubExecOnce` to `stubSpawnOnce`
+
+```js
+const {stubExecOnce} = require('stub-spawn-once')
+stubExecOnce('echo "hi"', "bye")
+```
+
 [execFile]: https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback
 
 ### Small print

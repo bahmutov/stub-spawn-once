@@ -129,4 +129,9 @@ function stubSpawnShellOnce (command, exitCode, stdout, stderr) {
   }
 }
 
-module.exports = { stubSpawnOnce, stubSpawnShellOnce }
+module.exports = {
+  stubSpawnOnce,
+  stubSpawnShellOnce,
+  stubExecOnce: stubSpawnOnce,
+  stubExecFileOnce: stubSpawnOnce
+}
