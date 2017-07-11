@@ -111,6 +111,14 @@ if (!stubbed()) {
 
 function stubSpawnOnce (command, exitCode, stdout, stderr) {
   la(is.unemptyString(command), 'missing command to stub', command)
+
+  if (is.string(exitCode)) {
+    debug('stub for %s without explicit exit code, assuming 0', command)
+    stderr = stdout
+    stdout = exitCode
+    exitCode = 0
+  }
+
   commands[command] = {
     exitCode,
     stdout,
@@ -121,6 +129,14 @@ function stubSpawnOnce (command, exitCode, stdout, stderr) {
 // only provide the shell command like 'echo "hello"'
 function stubSpawnShellOnce (command, exitCode, stdout, stderr) {
   la(is.unemptyString(command), 'missing shell command to stub', command)
+
+  if (is.string(exitCode)) {
+    debug('stub for %s without explicit exit code, assuming 0', command)
+    stderr = stdout
+    stdout = exitCode
+    exitCode = 0
+  }
+
   const fullCommand = `/bin/sh -c ${command}`
   commands[fullCommand] = {
     exitCode,

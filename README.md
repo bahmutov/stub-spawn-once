@@ -61,6 +61,14 @@ execa
   */
 ```
 
+***hint** `exit code` argument is optional and you can omit it (then 0 will be
+returned)
+
+```js
+const { stubSpawnShellOnce } = require('.')
+stubSpawnShellOnce('my command', 'hi there', 'error output string')
+```
+
 [spawn]: http://devdocs.io/node/child_process#child_process_child_process_spawn_command_args_options
 
 ## Install

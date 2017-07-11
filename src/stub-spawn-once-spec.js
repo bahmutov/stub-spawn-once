@@ -65,6 +65,16 @@ describe('stub-spawn-once', () => {
       })
     })
 
+    it('stubs cp.exec output only', done => {
+      const cmd = 'does not exist'
+      stubExecOnce(cmd, 'foo')
+      cp.exec(cmd, (code, stdout) => {
+        la(code === 0, 'wrong code', code)
+        la(stdout === 'foo', 'wrong stdout', stdout)
+        done()
+      })
+    })
+
     it('restores cp.exec after that', done => {
       const cmd = 'does not exist'
       stubExecOnce(cmd, 0, 'foo')
