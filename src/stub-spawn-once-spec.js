@@ -75,6 +75,16 @@ describe('stub-spawn-once', () => {
       })
     })
 
+    it('cp.exec stub can give expected error', done => {
+      const cmd = 'does not exist'
+      const error = new Error('my error')
+      stubExecOnce(cmd, error)
+      cp.exec(cmd, err => {
+        la(err === error, 'wrong error', err)
+        done()
+      })
+    })
+
     it('restores cp.exec after that', done => {
       const cmd = 'does not exist'
       stubExecOnce(cmd, 0, 'foo')

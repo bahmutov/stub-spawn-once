@@ -130,10 +130,10 @@ you easy testing.
 
 ```js
 const {stubSpawnOnce} = require('stub-spawn-once')
-stubSpawnOnce('echo "hello"', 0, 'foo', 'bar')
+stubSpawnOnce('echo "hello"', null, 'foo', 'bar')
 const cp = require('child_process')
 cp.exec('echo "hello"', (code, out, errors) => {
-  // code is 0
+  // code is null
   // out is "foo"
   // errors is "bar"
 })
@@ -144,6 +144,16 @@ You can use alias `stubExecOnce` to `stubSpawnOnce`
 ```js
 const {stubExecOnce} = require('stub-spawn-once')
 stubExecOnce('echo "hi"', "bye")
+```
+
+You can pass desired error instance
+
+```js
+const error = new Error('my error')
+stubExecOnce('invalid command', error)
+cp.exec('invalid command', err => {
+  // err === error
+})
 ```
 
 [execFile]: https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback
