@@ -8,6 +8,8 @@
 [![semantic-release][semantic-image] ][semantic-url]
 [![js-standard-style][standard-image]][standard-url]
 
+Read [Node mocking examples](https://github.com/bahmutov/node-mock-examples) and [mocked-env](https://github.com/bahmutov/mocked-env)
+
 ## Why
 
 Mocking [child_process.spawn][spawn] is hard. See for yourself - the stubbing
